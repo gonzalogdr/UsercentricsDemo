@@ -2,19 +2,25 @@ package com.gguzman.usercentricsdemo
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.TypefaceCompat
+import com.usercentrics.sdk.BannerFont
 import com.usercentrics.sdk.BannerSettings
 import com.usercentrics.sdk.ButtonLayout
 import com.usercentrics.sdk.ButtonSettings
 import com.usercentrics.sdk.ButtonType
+import com.usercentrics.sdk.HeaderImageSettings
 import com.usercentrics.sdk.PopupPosition
 import com.usercentrics.sdk.SecondLayerStyleSettings
+import com.usercentrics.sdk.TitleSettings
 import com.usercentrics.sdk.Usercentrics
 import com.usercentrics.sdk.UsercentricsBanner
+import com.usercentrics.sdk.UsercentricsImage
 import com.usercentrics.sdk.UsercentricsLayout
 import com.usercentrics.sdk.UsercentricsOptions
 import com.usercentrics.sdk.UsercentricsServiceConsent
@@ -26,6 +32,9 @@ import kotlinx.coroutines.runBlocking
 private val YOUR_SETTINGS_ID = "Ebbizn5Jn2mbWD"
 private val YOUR_RULESET_ID = "fXUmw96Il7APpG"
 //endregion
+
+private val logoImage = UsercentricsImage.ImageDrawableId(R.drawable.logo)
+private val headerImage = UsercentricsImage.ImageDrawableId(R.drawable.header)
 
 class MainActivity : AppCompatActivity() {
 
@@ -40,9 +49,9 @@ class MainActivity : AppCompatActivity() {
 
     //region Usercentrics initialization
     private val options = UsercentricsOptions(
-        settingsId = YOUR_SETTINGS_ID, //YOUR_SETTINGS_ID
+        //settingsId = YOUR_SETTINGS_ID, //YOUR_SETTINGS_ID
         loggerLevel = UsercentricsLoggerLevel.DEBUG,
-        //ruleSetId = YOUR_RULESET_ID
+        ruleSetId = YOUR_RULESET_ID
         /*
         More parameters:
         - ruleSetID --> If we are using geolocation rules
@@ -98,22 +107,32 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showFirstLayer(){
-        /*customGeneralStyle?.layerBgColor = Color.CYAN
-        customGeneralStyle?.layerBgSecondColor = Color.YELLOW
+        //region ABTesting
+       /* val customFirstLayer: CustomFirstLayer = CustomFirstLayer()
+        val font: Typeface = TypefaceCompat.create(this, Typeface.createFromAsset(this.assets, "fonts/PlayfairDisplay-Black.otf"), Typeface.BOLD)
+        customFirstLayer.title = TitleSettings(font = font)
+        //customFirstLayer.headerImage = HeaderImageSettings.ExtendedLogoSettings(headerImage)
 
-        customFirstLayer?.firstLayerLayout = UsercentricsLayout.Popup(PopupPosition.CENTER)
-        val settings = BannerSettings(firstLayerStyleSettings = customFirstLayer?.getFirstLayerSettings(), secondLayerStyleSettings = customSecondLayer?.getSecondLayerSettings(), generalStyleSettings = customGeneralStyle?.getGeneralStyleSettings())*/
-
-        val customGeneralStyleA: CustomGeneralStyle = CustomGeneralStyle()
-        customGeneralStyleA.layerBgColor = Color.CYAN
 
         val customGeneralStyleB: CustomGeneralStyle = CustomGeneralStyle()
-        customGeneralStyleB.layerBgColor = Color.GREEN
+        customGeneralStyleB.layerBgColor = Color.GRAY
+        customGeneralStyleB.font = BannerFont(this, Typeface.createFromAsset(this.assets, "fonts/PlayfairDisplay-Black.otf"), 14f)
+        customGeneralStyleB.logo = logoImage
+        customGeneralStyleB.bordersColor = Color.WHITE
 
-        val settingsA = BannerSettings(generalStyleSettings = customGeneralStyleA.getGeneralStyleSettings())
-        val settingsB = BannerSettings(generalStyleSettings = customGeneralStyleB.getGeneralStyleSettings())
-
+        val settingsA = BannerSettings(firstLayerStyleSettings = customFirstLayer.getFirstLayerSettings())
+        val settingsB = BannerSettings(generalStyleSettings = customGeneralStyleB.getGeneralStyleSettings(), firstLayerStyleSettings = customFirstLayer.getFirstLayerSettings())
         banner = UsercentricsBanner(this, getABTesting(settingsA, settingsB))
+        */
+        //endregion
+
+        customGeneralStyle?.layerBgColor = Color.GRAY
+        customGeneralStyle?.layerBgSecondColor = Color.WHITE
+
+        customFirstLayer?.firstLayerLayout = UsercentricsLayout.Popup(PopupPosition.CENTER)
+        val settings = BannerSettings(firstLayerStyleSettings = customFirstLayer?.getFirstLayerSettings(), secondLayerStyleSettings = customSecondLayer?.getSecondLayerSettings(),
+            generalStyleSettings = customGeneralStyle?.getGeneralStyleSettings())
+        banner = UsercentricsBanner(this, )
         banner?.showFirstLayer() { usercentricsConsentUserResponse ->
             applyAcceptedConsents(usercentricsConsentUserResponse?.consents)
         }
